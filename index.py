@@ -22,3 +22,9 @@ def write_filename_to_json(encrypted_filename, filename):
     data.update(new_data)
     with open("filename.json", "w") as write_file:
         json.dump(data, write_file)
+
+def get_filename_from_json(file_code):
+    with open("filename.json", 'r') as file:
+        json_data = json.load(file)
+    if file_code in json_data:
+        return json_data[file_code]
