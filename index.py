@@ -21,14 +21,14 @@ def write_filename_to_json(encrypted_filename, filename):
             data = json.load(file)
     data.update(new_data)
     with open("filename.json", "w") as write_file:
-        json.dump(data, write_file)
+         json.dump(data, write_file)
 
 def get_filename_from_json(file_code):
     with open("filename.json", 'r') as file:
         json_data = json.load(file)
     if file_code in json_data:
         return json_data[file_code]
-    
+        
 def generate_key():
     if not os.path.exists(key_path):
         key = Fernet.generate_key()
@@ -36,10 +36,10 @@ def generate_key():
             file_key.write(key)
 
 def get_key():
-    with open (key_path, 'rb') as file_key:
+    with open(key_path, 'rb') as file_key:
         key = file_key.read()
-        return key
-    
+    return key
+
 def encrypt_file(file,filename):
     if not os.path.exists(encrypted_folder):
         os.makedirs(encrypted_folder)
@@ -47,12 +47,12 @@ def encrypt_file(file,filename):
     cipher = Fernet(key)
     data = file.read()
     encrypted_data = cipher.encrypt(data)
-    encrypted_filename = str (uuid.uuid4().hex) + ".enc"
+    encrypted_filename = str(uuid.uuid4().hex) + ".enc"
     write_filename_to_json(encrypted_filename, filename)
     with open(os.path.join(encrypted_folder, encrypted_filename), 'wb') as encrypted_file:
         encrypted_file.write(encrypted_data)
-    return encrypted_filename    
-
+    return encrypted_filename
+    
 def decrypt_file(file_code):
     if not os.path.exists(decrypted_folder):
         os.makedirs(decrypted_folder)
@@ -65,7 +65,7 @@ def decrypt_file(file_code):
         print(decrypted_filename)
         with open(os.path.join(decrypted_folder, decrypted_filename), 'wb') as decrypted_file:
             decrypted_file.write(decrypted_data)
-        return decrypted_filename  
+        return decrypted_filename
 
 @app.route('/')
 def send_report():
@@ -91,7 +91,6 @@ def add_cors_headers(response):
     return response
 
 
-if __name__== '__main__':
+if __name__ == '__main__':
     key = generate_key()
     app.run()
-
