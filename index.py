@@ -40,7 +40,7 @@ def get_key():
         key = file_key.read()
         return key
     
-def encrypt_files(file,filename):
+def encrypt_file(file,filename):
     if not os.path.exists(encrypted_folder):
         os.makedirs(encrypted_folder)
     key = get_key()
@@ -48,7 +48,7 @@ def encrypt_files(file,filename):
     data = file.read()
     encrypted_data = cipher.encrypt(data)
     encrypted_filename = str (uuid.uuid4().hex) + ".enc"
-    write_filename_to_json(encrypted_Filename, filename)
+    write_filename_to_json(encrypted_filename, filename)
     with open(os.path.join(encrypted_folder, encrypted_filename), 'wb') as encrypted_file:
         encrypted_file.write(encrypted_data)
     return encrypted_filename    
@@ -91,7 +91,7 @@ def add_cors_headers(response):
     return response
 
 
-if __name == '__main':
+if __name__== '__main__':
     key = generate_key()
     app.run()
 
