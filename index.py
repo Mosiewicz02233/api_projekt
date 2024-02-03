@@ -11,6 +11,7 @@ decrypted_folder = "decrypted_files/"
 filename_path = "./filename.json"
 key_path = "./key.txt"
 
+#Zapisywanie informacji o zaszyfrowanej nazwie pliku do pliku JSON
 def write_filename_to_json(encrypted_filename, filename):
     new_data = {
         encrypted_filename : filename
@@ -23,23 +24,27 @@ def write_filename_to_json(encrypted_filename, filename):
     with open("filename.json", "w") as write_file:
          json.dump(data, write_file)
 
+#Pobierania oryginalnej nazwy pliku na podstawie kodu pliku z pliku JSON
 def get_filename_from_json(file_code):
     with open("filename.json", 'r') as file:
         json_data = json.load(file)
     if file_code in json_data:
         return json_data[file_code]
-        
+    
+#Generowanie klucza, jeśli nie istnieje        
 def generate_key():
     if not os.path.exists(key_path):
         key = Fernet.generate_key()
         with open(key_path, 'wb') as file_key:
             file_key.write(key)
 
+#Pobieranie klucza
 def get_key():
     with open(key_path, 'rb') as file_key:
         key = file_key.read()
     return key
 
+#Szyfrowanie pliku
 def encrypt_file(file,filename):
     if not os.path.exists(encrypted_folder):
         os.makedirs(encrypted_folder)
@@ -53,6 +58,7 @@ def encrypt_file(file,filename):
         encrypted_file.write(encrypted_data)
     return encrypted_filename
     
+#Odszyfrowywanie pliku    
 def decrypt_file(file_code):
     if not os.path.exists(decrypted_folder):
         os.makedirs(decrypted_folder)
@@ -67,10 +73,12 @@ def decrypt_file(file_code):
             decrypted_file.write(decrypted_data)
         return decrypted_filename
 
+#Endpoint strony głównej
 @app.route('/')
 def send_report():
     return send_from_directory('./public', 'index.html')
 
+#Endpoint przesyłania pliku
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
@@ -78,19 +86,21 @@ def upload_file():
     encrypted_filename = encrypt_file(file, filename)
     return f'File "{filename}" uploaded and encrypted. File Code:{encrypted_filename}.'
 
+#Endpoint pobierania pliku
 @app.route('/download/<file_code>', methods=['GET'])
 def download(file_code):
     decrypted_filename = decrypt_file(file_code)
     path_decrypted_file = os.path.join(decrypted_folder, decrypted_filename)
     return send_file(path_decrypted_file, as_attachment=True)
 
+#Dodanie nagłówków CORS
 @app.after_request
 def add_cors_headers(response):
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
-
+#Generowanie klucza i uruchomienie aplikacji
 if __name__ == '__main__':
     key = generate_key()
     app.run()

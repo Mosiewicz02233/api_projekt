@@ -5,6 +5,7 @@
 </head>
 <body>
 
+<!-- Sekcja przesyłania pliku -->
   <h1>Przesyłanie pliku</h1>
   <input type="file" id="fileInput">
   <button onclick="uploadFile()">Wyślij plik</button>
@@ -12,10 +13,12 @@
 
   <hr>
 
+  <!-- Sekcja pobierania pliku -->
   <h1>Pobieranie pliku</h1>
   <input type="text" id="fileCode" placeholder="Enter file code">
   <button onclick="downloadFile()">Pobierz plik</button>
 
+  <!-- Skrypt JavaScript -->
   <script>
      function uploadFile() {
       var fileInput = document.getElementById('fileInput');
@@ -38,6 +41,8 @@
 
       xhr.send(formData);
     }
+
+    // Funkcja do pobierania pliku z serwera
     function downloadFile() {
       var fileCodeInput = document.getElementById('fileCode');
       var fileCode = fileCodeInput.value;
